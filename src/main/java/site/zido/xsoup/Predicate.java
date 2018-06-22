@@ -7,4 +7,7 @@ package site.zido.xsoup;
  */
 public interface Predicate {
     void predicate();
+    default boolean test(PathStepState state){
+        throw new UnsupportedOperationException();
+    }
 }

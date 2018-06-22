@@ -1,5 +1,9 @@
 package site.zido.xsoup;
 
+import site.zido.xsoup.utils.ArrayUtils;
+
+import java.util.*;
+
 public class Node {
     private NodeKind kind;
     private String name;
@@ -81,5 +85,113 @@ public class Node {
 
     public void setDown(Node[] down) {
         this.down = down;
+    }
+
+    @Override
+    public String toString() {
+        if (kind == NodeKind.ATTR) {
+            return attr;
+        }
+        return new String(getBytes());
+    }
+
+    public byte[] getBytes() {
+        if (kind == NodeKind.ATTR) {
+            return attr.getBytes();
+        }
+        if (kind != NodeKind.START) {
+            return text;
+        }
+        int size = 0;
+        for (int i = pos; i < end; i++) {
+            if (nodes[i].kind == NodeKind.TEXT) {
+                size += nodes[i].text.length;
+            }
+        }
+        byte[] result = new byte[]{};
+        for (int i = pos; i < end; i++) {
+            if (nodes[i].kind == NodeKind.TEXT) {
+                result = ArrayUtils.concat(result, nodes[i].text);
+            }
+        }
+        return result;
+    }
+
+    public boolean eqStr(String s) {
+        if (kind == NodeKind.ATTR) {
+            return s.equals(attr);
+        }
+        if (kind != NodeKind.START) {
+            if (s.length() != text.length) {
+                return false;
+            }
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) != text[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        int si = 0;
+        for (int i = pos; i < end; i++) {
+            if (nodes[i].kind == NodeKind.TEXT) {
+                for (byte b : nodes[i].text) {
+                    if (si > s.length()) {
+                        return false;
+                    }
+                    if (s.charAt(si) != b) {
+                        return false;
+                    }
+                    si++;
+                }
+            }
+        }
+        return si == s.length();
+    }
+
+    public boolean contains(String s) {
+        if (s == null || s.length() == 0) {
+            return true;
+        }
+        if (kind == NodeKind.ATTR) {
+            return attr.contains(s);
+        }
+        char s0 = s.charAt(0);
+        for (int i = pos; i < end; i++) {
+            if (nodes[i].kind == NodeKind.TEXT) {
+                byte[] text = nodes[i].text;
+                nextTry:
+                for (int j = 0; j < text.length; j++) {
+                    byte c = text[j];
+                    if (s0 != c) {
+                        continue;
+                    }
+                    int si = 1;
+                    for (j++; j < text.length && si < s.length(); j++) {
+                        if (s.charAt(si) != text[j]) {
+                            continue nextTry;
+                        }
+                        si++;
+                    }
+                    if (si == s.length()) {
+                        return true;
+                    }
+                    for (int x = i + 1; x < end; x++) {
+                        if (nodes[x].kind == NodeKind.TEXT) {
+                            for (byte d : nodes[j].text) {
+                                if (s.charAt(si) != d) {
+                                    continue nextTry;
+                                }
+                                si++;
+                                if (si == s.length()) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

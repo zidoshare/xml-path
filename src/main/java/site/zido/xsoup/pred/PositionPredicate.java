@@ -1,5 +1,7 @@
 package site.zido.xsoup.pred;
 
+import site.zido.xsoup.Node;
+import site.zido.xsoup.PathStepState;
 import site.zido.xsoup.Predicate;
 
 /**
@@ -17,5 +19,10 @@ public class PositionPredicate implements Predicate {
 
     public int getPos() {
         return pos;
+    }
+
+    @Override
+    public boolean test(PathStepState state) {
+        return state.getPos() == pos;
     }
 }

@@ -1,6 +1,7 @@
 package site.zido.xsoup.pred;
 
 import site.zido.xsoup.Path;
+import site.zido.xsoup.PathStepState;
 import site.zido.xsoup.Predicate;
 
 /**
@@ -18,5 +19,10 @@ public class ExistsPredicate implements Predicate {
 
     public Path path() {
         return path;
+    }
+
+    @Override
+    public boolean test(PathStepState state) {
+        return path.exists(state.getNode());
     }
 }

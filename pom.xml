@@ -7,21 +7,14 @@
     <artifactId>xsoup</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0-SNAPSHOT</version>
-    <description>基于jsoup的xpath解析器</description>
+    <description>xpath解析器</description>
     <properties>
         <java.version>1.8</java.version>
-        <jsoup.version>1.11.3</jsoup.version>
         <slf4j.version>1.7.25</slf4j.version>
         <junit.version>4.11</junit.version>
     </properties>
 
     <dependencies>
-        <!-- jsoup -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>${jsoup.version}</version>
-        </dependency>
 
         <!-- slf4j -->
         <dependency>

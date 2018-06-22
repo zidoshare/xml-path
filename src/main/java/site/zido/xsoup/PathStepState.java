@@ -1,5 +1,7 @@
 package site.zido.xsoup;
 
+import site.zido.xsoup.pred.ContainsPredicate;
+import site.zido.xsoup.pred.EqualsPredicate;
 import site.zido.xsoup.pred.ExistsPredicate;
 import site.zido.xsoup.pred.PositionPredicate;
 
@@ -23,7 +25,7 @@ public class PathStepState {
     public boolean nextStep() {
         while (next()) {
             pos++;
-            if (step.getPred() != null || test(step.getPred())) {
+            if (step.getPred() != null || step.getPred().test(this)) {
                 return true;
             }
         }
@@ -168,16 +170,15 @@ public class PathStepState {
         return false;
     }
 
-    private boolean test(Predicate pred) {
-        if (pred instanceof PositionPredicate) {
-            PositionPredicate tmpPred = (PositionPredicate) pred;
-            if (tmpPred.getPos() == pos) {
-                return true;
-            }
-        } else if (pred instanceof ExistsPredicate) {
-            ExistsPredicate tmpPred = (ExistsPredicate) pred;
-//TODO            tmpPred.path().
-        }
-        return false;
+    public int getPos() {
+        return pos;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public void setStep(PathStep step) {
+        this.step = step;
     }
 }

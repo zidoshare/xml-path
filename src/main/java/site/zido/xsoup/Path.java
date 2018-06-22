@@ -10,5 +10,82 @@ public class Path {
     private String path;
     private PathStep[] steps;
 
+    public boolean exists(Node context) {
+        return iter(context).next();
+    }
 
+    public Iter iter(Node context) {
+        Iter iter = new Iter(new PathStepState[steps.length], new boolean[context.getNodes().length]);
+        for (int i = 0; i < steps.length; i++) {
+            PathStepState state = new PathStepState();
+            state.setStep(steps[i]);
+            iter.states[i] = state;
+        }
+        iter.states[0].init(context);
+        return iter;
+    }
+
+    public class Iter {
+        private PathStepState[] states;
+        private boolean[] seen;
+
+        private Iter(PathStepState[] states, boolean[] seen) {
+            this.states = states;
+            this.seen = seen;
+        }
+
+
+        public Node node() {
+            PathStepState state = states[states.length - 1];
+            if (state.getPos() == 0) {
+                throw new RuntimeException("Iter.node called before Iter.next");
+            }
+            if (state.getNode() == null) {
+                throw new RuntimeException("Iter.node called after Iter.next false");
+            }
+            return state.getNode();
+        }
+
+        public boolean next() {
+            int tip = states.length - 1;
+            outer:
+            while (true) {
+                while (!states[tip].nextStep()) {
+                    tip--;
+                    if (tip == -1) {
+                        return false;
+                    }
+                }
+                while (tip < states.length - 1) {
+                    tip++;
+                    states[tip].init(states[tip - 1].getNode());
+                    if (!states[tip].nextStep()) {
+                        tip--;
+                        continue outer;
+                    }
+                }
+                if (seen[states[tip].getNode().getPos()]) {
+                    continue;
+                }
+                seen[states[tip].getNode().getPos()] = true;
+                return true;
+            }
+        }
+    }
+
+    public String toString(Node context) {
+        Iter iter = iter(context);
+        if (iter.next()) {
+            return iter.node().toString();
+        }
+        return "";
+    }
+
+    public byte[] getBytes(Node node) {
+        Iter iter = iter(node);
+        if (iter.next()) {
+            return iter.node().getBytes();
+        }
+        return null;
+    }
 }
