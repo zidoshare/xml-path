@@ -1,13 +1,23 @@
 package site.zido.xsoup;
 
 /**
- * The interface Predicate.
+ * The interface of Predicate.
  *
  * @author zido
  */
 public interface Predicate {
-    void predicate();
-    default boolean test(PathStepState state){
+    /**
+     * process .
+     */
+    void process();
+
+    /**
+     * test the state
+     *
+     * @param state path state.
+     * @return true/false
+     */
+    default boolean test(PathStepState state) {
         throw new UnsupportedOperationException();
     }
 }

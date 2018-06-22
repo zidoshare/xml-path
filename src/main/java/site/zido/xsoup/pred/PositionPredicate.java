@@ -1,11 +1,10 @@
 package site.zido.xsoup.pred;
 
-import site.zido.xsoup.Node;
 import site.zido.xsoup.PathStepState;
 import site.zido.xsoup.Predicate;
 
 /**
- * The type Position predicate.
+ * Predicate keywords : position.
  *
  * @author zido
  */
@@ -13,7 +12,7 @@ public class PositionPredicate implements Predicate {
     private int pos;
 
     @Override
-    public void predicate() {
+    public void process() {
 
     }
 

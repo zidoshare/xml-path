@@ -7,13 +7,28 @@ package site.zido.xsoup;
  * @author zido
  */
 public class Path {
+    /**
+     * the path str
+     */
     private String path;
     private PathStep[] steps;
 
+    /**
+     * Exists boolean.
+     *
+     * @param context the context
+     * @return the boolean
+     */
     public boolean exists(Node context) {
         return iter(context).next();
     }
 
+    /**
+     * iterator of context.
+     *
+     * @param context the context
+     * @return the iterator
+     */
     public Iter iter(Node context) {
         Iter iter = new Iter(new PathStepState[steps.length], new boolean[context.getNodes().length]);
         for (int i = 0; i < steps.length; i++) {
@@ -25,6 +40,9 @@ public class Path {
         return iter;
     }
 
+    /**
+     * The type Iter.
+     */
     public class Iter {
         private PathStepState[] states;
         private boolean[] seen;
@@ -35,6 +53,11 @@ public class Path {
         }
 
 
+        /**
+         * Node node.
+         *
+         * @return the node
+         */
         public Node node() {
             PathStepState state = states[states.length - 1];
             if (state.getPos() == 0) {
@@ -46,6 +69,11 @@ public class Path {
             return state.getNode();
         }
 
+        /**
+         * Next boolean.
+         *
+         * @return the boolean
+         */
         public boolean next() {
             int tip = states.length - 1;
             outer:
@@ -73,6 +101,12 @@ public class Path {
         }
     }
 
+    /**
+     * To string string.
+     *
+     * @param context the context
+     * @return the string
+     */
     public String toString(Node context) {
         Iter iter = iter(context);
         if (iter.next()) {
@@ -81,6 +115,12 @@ public class Path {
         return "";
     }
 
+    /**
+     * Get bytes byte [ ].
+     *
+     * @param node the node
+     * @return the byte [ ]
+     */
     public byte[] getBytes(Node node) {
         Iter iter = iter(node);
         if (iter.next()) {

@@ -1,10 +1,10 @@
 package site.zido.xsoup;
 
-import site.zido.xsoup.pred.ContainsPredicate;
-import site.zido.xsoup.pred.EqualsPredicate;
-import site.zido.xsoup.pred.ExistsPredicate;
-import site.zido.xsoup.pred.PositionPredicate;
-
+/**
+ * path step state.
+ *
+ * @author zido
+ */
 public class PathStepState {
 
     private static final Node[] EMPTY_NODE_LIST = new Node[]{};

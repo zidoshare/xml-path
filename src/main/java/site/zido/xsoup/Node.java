@@ -2,8 +2,11 @@ package site.zido.xsoup;
 
 import site.zido.xsoup.utils.ArrayUtils;
 
-import java.util.*;
-
+/**
+ * dom node.
+ *
+ * @author zido
+ */
 public class Node {
     private NodeKind kind;
     private String name;

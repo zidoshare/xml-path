@@ -5,7 +5,7 @@ import site.zido.xsoup.PathStepState;
 import site.zido.xsoup.Predicate;
 
 /**
- * The type Exists predicate.
+ * Predicate keywords : exists.
  *
  * @author zido
  */
@@ -13,7 +13,7 @@ public class ExistsPredicate implements Predicate {
     private Path path;
 
     @Override
-    public void predicate() {
+    public void process() {
 
     }
 

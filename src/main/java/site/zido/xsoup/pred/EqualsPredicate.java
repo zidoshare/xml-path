@@ -5,7 +5,7 @@ import site.zido.xsoup.PathStepState;
 import site.zido.xsoup.Predicate;
 
 /**
- * equals.
+ * Predicate keywords : equals.
  *
  * @author zido
  */
@@ -14,7 +14,7 @@ public class EqualsPredicate implements Predicate {
     private Path path;
 
     @Override
-    public void predicate() {
+    public void process() {
 
     }
 
