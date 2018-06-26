@@ -13,6 +13,11 @@ public class ContainsPredicate implements Predicate {
     private Path path;
     private String value;
 
+    public ContainsPredicate(Path path, String value) {
+        this.path = path;
+        this.value = value;
+    }
+
     @Override
     public void process() {
 

@@ -1,5 +1,7 @@
 package site.zido.xsoup;
 
+import java.util.List;
+
 /**
  * Path is a compiled path that can be applied to a context node to obtain a matching node set.
  * A single Path can be applied concurrently to any number of context nodes.
@@ -11,7 +13,16 @@ public class Path {
      * the path str
      */
     private String path;
-    private PathStep[] steps;
+    private List<PathStep> steps;
+
+    public Path(List<PathStep> steps, String path) {
+        this.steps = steps;
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
+    }
 
     /**
      * Exists boolean.
@@ -30,10 +41,10 @@ public class Path {
      * @return the iterator
      */
     public Iter iter(Node context) {
-        Iter iter = new Iter(new PathStepState[steps.length], new boolean[context.getNodes().length]);
-        for (int i = 0; i < steps.length; i++) {
+        Iter iter = new Iter(new PathStepState[steps.size()], new boolean[context.getNodes().length]);
+        for (int i = 0; i < steps.size(); i++) {
             PathStepState state = new PathStepState();
-            state.setStep(steps[i]);
+            state.setStep(steps.get(i));
             iter.states[i] = state;
         }
         iter.states[0].init(context);

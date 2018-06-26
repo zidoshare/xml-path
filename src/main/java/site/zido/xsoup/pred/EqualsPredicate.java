@@ -13,6 +13,11 @@ public class EqualsPredicate implements Predicate {
     private String value;
     private Path path;
 
+    public EqualsPredicate(Path path, String value) {
+        this.path = path;
+        this.value = value;
+    }
+
     @Override
     public void process() {
 

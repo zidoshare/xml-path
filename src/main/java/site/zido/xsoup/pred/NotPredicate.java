@@ -11,6 +11,10 @@ import site.zido.xsoup.Predicate;
 public class NotPredicate implements Predicate {
     private Path path;
 
+    public NotPredicate(Path path) {
+        this.path = path;
+    }
+
     @Override
     public void process() {
 

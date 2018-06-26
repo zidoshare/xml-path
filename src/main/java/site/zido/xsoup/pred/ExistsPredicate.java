@@ -12,6 +12,10 @@ import site.zido.xsoup.Predicate;
 public class ExistsPredicate implements Predicate {
     private Path path;
 
+    public ExistsPredicate(Path path) {
+        this.path = path;
+    }
+
     @Override
     public void process() {
 

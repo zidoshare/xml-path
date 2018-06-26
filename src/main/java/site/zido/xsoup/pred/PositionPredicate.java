@@ -11,6 +11,10 @@ import site.zido.xsoup.Predicate;
 public class PositionPredicate implements Predicate {
     private int pos;
 
+    public PositionPredicate(int pos) {
+        this.pos = pos;
+    }
+
     @Override
     public void process() {
 
