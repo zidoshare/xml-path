@@ -1,6 +1,11 @@
 package site.zido.xsoup;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import site.zido.xsoup.utils.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * dom node.
@@ -8,6 +13,11 @@ import site.zido.xsoup.utils.ArrayUtils;
  * @author zido
  */
 public class Node {
+    public static final Node START_NODE;
+    static {
+        START_NODE = new Node();
+        START_NODE.kind = NodeKind.START;
+    }
     private NodeKind kind;
     private String name;
     private String attr;
@@ -196,5 +206,12 @@ public class Node {
             }
         }
         return false;
+    }
+    public Node parseDocument(Document doc){
+        List<Node> nodes = new ArrayList<>();
+        byte[] text;
+        nodes.add(START_NODE);
+        //TODO parse document
+        return null;
     }
 }
