@@ -7,9 +7,9 @@ package site.zido.xsoup;
  */
 public interface Predicate {
     /**
-     * process .
+     * predicate .
      */
-    void process();
+    void predicate();
 
     /**
      * test the state

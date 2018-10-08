@@ -17,7 +17,7 @@ public class ExistsPredicate implements Predicate {
     }
 
     @Override
-    public void process() {
+    public void predicate() {
 
     }
 

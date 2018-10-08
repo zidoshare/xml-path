@@ -52,7 +52,7 @@ public class PathStep {
         this.root = root;
     }
 
-    public Axis getAxis() {
+    public Axis axis() {
         return axis;
     }
 
@@ -76,7 +76,7 @@ public class PathStep {
         this.kind = kind;
     }
 
-    public Predicate getPred() {
+    public Predicate pred() {
         return pred;
     }
 

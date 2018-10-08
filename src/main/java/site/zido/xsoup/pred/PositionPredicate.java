@@ -16,7 +16,7 @@ public class PositionPredicate implements Predicate {
     }
 
     @Override
-    public void process() {
+    public void predicate() {
 
     }
 

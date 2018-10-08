@@ -22,7 +22,7 @@ public class OrPredicate implements Predicate {
     }
 
     @Override
-    public void process() {
+    public void predicate() {
 
     }
 }

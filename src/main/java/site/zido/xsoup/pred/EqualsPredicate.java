@@ -19,7 +19,7 @@ public class EqualsPredicate implements Predicate {
     }
 
     @Override
-    public void process() {
+    public void predicate() {
 
     }
 

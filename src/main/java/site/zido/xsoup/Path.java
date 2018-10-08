@@ -89,7 +89,7 @@ public class Path {
             int tip = states.length - 1;
             outer:
             while (true) {
-                while (!states[tip].nextStep()) {
+                while (!states[tip].next()) {
                     tip--;
                     if (tip == -1) {
                         return false;
@@ -98,7 +98,7 @@ public class Path {
                 while (tip < states.length - 1) {
                     tip++;
                     states[tip].init(states[tip - 1].getNode());
-                    if (!states[tip].nextStep()) {
+                    if (!states[tip].next()) {
                         tip--;
                         continue outer;
                     }
@@ -109,6 +109,7 @@ public class Path {
                 seen[states[tip].getNode().getPos()] = true;
                 return true;
             }
+            //unreachable
         }
     }
 
@@ -118,12 +119,12 @@ public class Path {
      * @param context the context
      * @return the string
      */
-    public String toString(Node context) {
+    public String toString(Node context) throws NoContentException {
         Iter iter = iter(context);
         if (iter.next()) {
             return iter.node().toString();
         }
-        return "";
+        throw new NoContentException();
     }
 
     /**
@@ -132,11 +133,11 @@ public class Path {
      * @param node the node
      * @return the byte [ ]
      */
-    public byte[] getBytes(Node node) {
+    public byte[] bytes(Node node) throws NoContentException {
         Iter iter = iter(node);
         if (iter.next()) {
             return iter.node().getBytes();
         }
-        return null;
+        throw new NoContentException();
     }
 }

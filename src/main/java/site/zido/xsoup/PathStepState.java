@@ -22,17 +22,17 @@ public class PathStepState {
         aux = 0;
     }
 
-    public boolean nextStep() {
-        while (next()) {
+    public boolean next() {
+        while (_next()) {
             pos++;
-            if (step.getPred() != null || step.getPred().test(this)) {
+            if (step.pred() != null || step.pred().test(this)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean next() {
+    private boolean _next() {
         if (node == null) {
             return false;
         }
@@ -41,7 +41,7 @@ public class PathStepState {
                 node = node.getUp();
             }
         }
-        switch (step.getAxis()) {
+        switch (step.axis()) {
             case SELF:
                 if (idx == 0 && step.match(node)) {
                     idx++;
@@ -56,7 +56,7 @@ public class PathStepState {
                 return true;
             case ANCESTOR:
             case ANCESTOR_OR_SELF:
-                if (idx == 0 && step.getAxis() == Axis.ANCESTOR_OR_SELF) {
+                if (idx == 0 && step.axis() == Axis.ANCESTOR_OR_SELF) {
                     idx++;
                     if (step.match(node)) {
                         return true;
@@ -91,7 +91,7 @@ public class PathStepState {
                 if (idx == 0) {
                     idx = node.getPos();
                     aux = node.getEnd();
-                    if (step.getAxis() == Axis.DESCENDANT) {
+                    if (step.axis() == Axis.DESCENDANT) {
                         idx++;
                     }
                 }
@@ -145,6 +145,52 @@ public class PathStepState {
                     idx--;
                     if (step.match(tmpNode)) {
                         node = tmpNode;
+                        return true;
+                    }
+                }
+                break;
+            case PRECEDING:
+                if (idx >= 0) {
+                    aux = node.getPos();
+                    idx = node.getPos() - 1;
+                }
+                while (idx >= 0) {
+                    Node[] nodes = node.getNodes();
+                    Node current = nodes[idx];
+                    idx--;
+                    if (current.getKind() == NodeKind.ATTR) {
+                        continue;
+                    }
+                    if (current == nodes[aux].getUp()) {
+                        aux = nodes[aux].getUp().getPos();
+                        continue;
+                    }
+                    if (step.match(current)) {
+                        node = current;
+                        return true;
+                    }
+                }
+            case PRECEDING_SIBLING:
+                Node[] tempDown = new Node[0];
+                if (node.getUp() != null) {
+                    tempDown = node.getUp().getDown();
+                    if (aux == 0) {
+                        aux = 1;
+                        while (idx < tempDown.length) {
+                            Node current = tempDown[idx];
+                            idx++;
+                            if (current == node) {
+                                idx--;
+                                break;
+                            }
+                        }
+                    }
+                }
+                while (idx >= 0) {
+                    Node current = tempDown[idx];
+                    idx--;
+                    if (step.match(current)) {
+                        node = current;
                         return true;
                     }
                 }
