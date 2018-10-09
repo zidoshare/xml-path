@@ -1,6 +1,8 @@
 package site.zido.xsoup.exception;
 
-public class NoLiteralException extends ParseException {
+import site.zido.xsoup.CompilerException;
+
+public class NoLiteralException extends CompilerException {
     public NoLiteralException() {
         super("expected a literal string");
     }

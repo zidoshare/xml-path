@@ -3,7 +3,16 @@ package site.zido.xsoup;
 import site.zido.xsoup.utils.ArrayUtils;
 
 /**
- * dom node.
+ * node is an item in an xml tree that was compiled to be processed via xml paths.
+ * <p>
+ * a node may represent:
+ * <ul>
+ * <li>an element in the xml document (<code>&lt;body&gt;</code>)</li>
+ * <li>an attribute of an element in the xml document (href="...")</li>
+ * <li>a comment in the xml document (<code>&lt;!--...---&gt;</code)</li>
+ * <li>a processing instruction in the xml document (&lt;?...?&gt;)</li>
+ * <li>some text within the xml document</li>
+ * </ul>
  *
  * @author zido
  */
@@ -17,6 +26,14 @@ public class Node {
     private int end;
     private Node up;
     private Node[] down;
+
+    public Node(NodeKind kind) {
+        this.kind = kind;
+    }
+
+    public Node() {
+
+    }
 
     public NodeKind getKind() {
         return kind;

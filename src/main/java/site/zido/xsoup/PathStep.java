@@ -2,7 +2,6 @@ package site.zido.xsoup;
 
 import site.zido.xsoup.exception.LexException;
 import site.zido.xsoup.exception.NoLiteralException;
-import site.zido.xsoup.exception.ParseException;
 import site.zido.xsoup.exception.UnreachableException;
 import site.zido.xsoup.pred.*;
 import site.zido.xsoup.utils.StringUtils;
@@ -36,7 +35,15 @@ public class PathStep {
                 ("*".equals(name) || node.getName().equals(name));
     }
 
-    public Path compile(String path) {
+    public Path mustCompile(String path) {
+        try {
+            return compile(path);
+        } catch (CompilerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Path compile(String path) throws CompilerException {
         PathCompiler pathCompiler = new PathCompiler(path, 0);
         if ("".equals(path)) {
             throw new IllegalArgumentException("empty path");
@@ -103,7 +110,11 @@ public class PathStep {
             this.i = i;
         }
 
-        private Path parsePath() {
+        public CompilerException errorf(String format, Object... args) {
+            return new CompilerException(String.format("compiling xml path %s:%d: %s", path, i, String.format(format, args)));
+        }
+
+        private Path parsePath() throws CompilerException {
             List<PathStep> steps = new LinkedList<>();
             int start = i;
 
@@ -122,7 +133,7 @@ public class PathStep {
             } else if (skipByte('@')) {
                 int mark = i;
                 if (skipName()) {
-                    return null;
+                    throw errorf("missing name after @");
                 }
                 step.axis = Axis.ATTRIBUTE;
                 step.name = path.substring(mark, i);
@@ -134,7 +145,7 @@ public class PathStep {
                     skipSpaces();
                 }
                 if ("".equals(step.name)) {
-                    return null;
+                    throw errorf("missing name");
                 } else if ("*".equals(step.name)) {
                     step.kind = NodeKind.START;
                 } else if (".".equals(step.name)) {
@@ -143,7 +154,7 @@ public class PathStep {
                 } else {
                     if (skipByte(':')) {
                         if (!skipByte(':')) {
-                            return null;
+                            throw errorf("missing ':'");
                         }
                         skipSpaces();
                         switch (step.name) {
@@ -185,8 +196,13 @@ public class PathStep {
                                 step.axis = Axis.PRECEDING_SIBLING;
                                 break;
                             default:
-                                return null;
+                                throw errorf("unsupported axis: %s", step.name);
                         }
+                        mark = i;
+                        if (!skipName()) {
+                            throw errorf("missing name");
+                        }
+                        step.name = path.substring(mark, i);
                         skipSpaces();
                     }
                     if (skipByte('(')) {
@@ -205,11 +221,12 @@ public class PathStep {
                                 step.kind = NodeKind.PROCINST;
                                 break;
                             default:
-                                return null;
+                                throw errorf("unsupported expression: %s()", step.name);
                         }
                         if (conflict) {
-                            return null;
+                            throw errorf("%s() cannot succeed on axis %s", step.name, step.axis);
                         }
+
                         String name = step.name;
                         String literal;
                         try {
@@ -218,17 +235,17 @@ public class PathStep {
                                 skipSpaces();
                                 step.name = literal;
                             } else {
-                                throw new LexException(String.format("%s() has no arguments", name));
+                                throw errorf("%s() has no arguments", name);
                             }
-                        } catch (ParseException e) {
+                        } catch (CompilerException e) {
                             if (e instanceof NoLiteralException) {
                                 step.name = "*";
                             } else {
-                                throw new LexException(e);
+                                throw errorf("%v", e.getMessage());
                             }
                         }
-                        if (skipByte(')')) {
-                            throw new LexException(String.format("%s() missing ')'", name));
+                        if (!skipByte(')')) {
+                            throw errorf("%s() missing ')'", name);
                         }
                         skipSpaces();
                     } else if ("*".equals(step.name) && step.kind == NodeKind.ANY) {
@@ -250,51 +267,44 @@ public class PathStep {
                     try {
                         int pos = parseInt();
                         if (pos == 0) {
-                            throw new LexException("positions start at 1");
+                            throw errorf("positions start at 1");
                         }
                         next = new PositionPredicate(pos);
-                    } catch (Exception e) {
+                    } catch (CompilerException e) {
                         if (skipString("contains(")) {
-                            Path path = parsePath();
+                            Path path;
+                            path = parsePath();
                             skipSpaces();
                             if (!skipByte(',')) {
-                                throw new LexException("contains() expected ',' followed by a literal string");
+                                throw errorf("contains() expected ',' followed by a literal string");
                             }
                             skipSpaces();
                             String value;
-                            try {
-                                value = parseLiteral();
-                            } catch (ParseException e1) {
-                                throw new LexException(e1);
-                            }
+                            value = parseLiteral();
                             skipSpaces();
                             if (skipByte(')')) {
-                                throw new LexException("contains() missing ')'");
+                                throw errorf("contains() missing ')'");
                             }
                             next = new ContainsPredicate(path, value);
                         } else if (skipString("not(")) {
                             Path path = parsePath();
                             skipSpaces();
-                            if (skipByte(')')) {
-                                throw new LexException("not() missing ')'");
+                            if (!skipByte(')')) {
+                                throw errorf("not() missing ')'");
                             }
                             next = new NotPredicate(path);
                         } else {
                             Path path = parsePath();
                             if (path.getPath().charAt(0) == '-') {
                                 if (!StringUtils.isNumber(path.getPath())) {
-                                    throw new LexException("positions must be positive");
+                                    throw errorf("positions must be positive");
                                 }
                             }
                             skipSpaces();
                             if (skipByte('=')) {
                                 skipSpaces();
                                 String value;
-                                try {
-                                    value = parseLiteral();
-                                } catch (ParseException e1) {
-                                    throw new LexException(e1);
-                                }
+                                value = parseLiteral();
                                 next = new EqualsPredicate(path, value);
                             } else {
                                 next = new ExistsPredicate(path);
@@ -339,7 +349,7 @@ public class PathStep {
                             continue;
                         }
                         if (stack.size() > 0) {
-                            throw new LexException("expected ')'");
+                            throw errorf("expected ')'");
                         }
                         if (sub.size() == 1) {
                             step.pred = sub.peek();
@@ -347,7 +357,7 @@ public class PathStep {
                             step.pred = new OrPredicate(sub);
                         }
                         if (!skipByte(']')) {
-                            throw new LexException("expected ']'");
+                            throw errorf("expected ']'");
                         }
                         skipSpaces();
                         break;
@@ -357,7 +367,7 @@ public class PathStep {
                 steps.add(step);
                 if (skipByte('/')) {
                     if ((start == 0 || start == i) && i < path.length()) {
-                        throw new LexException(String.format("unexpected %c", path.charAt('i')));
+                        throw errorf(String.format("unexpected %c", path.charAt('i')));
                     }
                     return new Path(steps, path.substring(start, i));
                 }
@@ -365,25 +375,25 @@ public class PathStep {
             throw new UnreachableException();
         }
 
-        private String parseLiteral() throws ParseException {
+        private String parseLiteral() throws CompilerException {
             if (skipByte('"')) {
                 int mark = i;
                 if (!skipByteFind('"')) {
-                    throw new ParseException("missing '\"'");
+                    throw new CompilerException("missing '\"'");
                 }
                 return path.substring(mark, i - 1);
             }
             if (skipByte('\'')) {
                 int mark = i;
                 if (skipByteFind('\'')) {
-                    throw new ParseException("missing '\"'");
+                    throw new CompilerException("missing '\"'");
                 }
                 return path.substring(mark, i - 1);
             }
             throw new NoLiteralException();
         }
 
-        private int parseInt() throws Exception {
+        private int parseInt() throws CompilerException {
             int mark = i;
             int v = 0;
             while (i < path.length() && path.charAt(i) >= '0' && path.charAt(i) < '9') {
@@ -392,7 +402,7 @@ public class PathStep {
                 i++;
             }
             if (i == mark) {
-                throw new Exception("no number to format");
+                throw new CompilerException("no number to format");
             }
             return v;
         }
