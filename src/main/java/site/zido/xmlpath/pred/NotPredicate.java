@@ -1,7 +1,7 @@
-package site.zido.xsoup.pred;
+package site.zido.xmlpath.pred;
 
-import site.zido.xsoup.Path;
-import site.zido.xsoup.Predicate;
+import site.zido.xmlpath.Path;
+import site.zido.xmlpath.Predicate;
 
 /**
  * Predicate keywords : not.

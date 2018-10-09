@@ -1,4 +1,4 @@
-package site.zido.xsoup.utils;
+package site.zido.xmlpath.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

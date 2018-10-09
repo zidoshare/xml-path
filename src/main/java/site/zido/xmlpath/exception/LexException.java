@@ -1,4 +1,4 @@
-package site.zido.xsoup.exception;
+package site.zido.xmlpath.exception;
 
 public class LexException extends RuntimeException {
     public LexException() {

@@ -1,4 +1,4 @@
-package site.zido.xsoup;
+package site.zido.xmlpath;
 
 public class NoContentException extends Exception {
     public NoContentException(){

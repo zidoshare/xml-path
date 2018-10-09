@@ -1,6 +1,6 @@
-package site.zido.xsoup.pred;
+package site.zido.xmlpath.pred;
 
-import site.zido.xsoup.Predicate;
+import site.zido.xmlpath.Predicate;
 
 import java.util.LinkedList;
 import java.util.List;

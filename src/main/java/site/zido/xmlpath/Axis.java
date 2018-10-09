@@ -1,4 +1,4 @@
-package site.zido.xsoup;
+package site.zido.xmlpath;
 
 /**
  * XPath Axes.please {@see https://www.w3schools.com/xml/xpath_axes.asp}

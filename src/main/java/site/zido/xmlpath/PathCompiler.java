@@ -1,4 +1,4 @@
-package site.zido.xsoup;
+package site.zido.xmlpath;
 
 import java.util.ArrayList;
 import java.util.List;

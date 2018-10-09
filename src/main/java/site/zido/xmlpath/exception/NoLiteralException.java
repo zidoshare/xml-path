@@ -1,6 +1,6 @@
-package site.zido.xsoup.exception;
+package site.zido.xmlpath.exception;
 
-import site.zido.xsoup.CompilerException;
+import site.zido.xmlpath.CompilerException;
 
 public class NoLiteralException extends CompilerException {
     public NoLiteralException() {

@@ -1,4 +1,4 @@
-package site.zido.xsoup.exception;
+package site.zido.xmlpath.exception;
 
 public class ParseException extends Exception{
     public ParseException(String message) {

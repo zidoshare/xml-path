@@ -1,6 +1,6 @@
-package site.zido.xsoup;
+package site.zido.xmlpath;
 
-import site.zido.xsoup.utils.ArrayUtils;
+import site.zido.xmlpath.utils.ArrayUtils;
 
 /**
  * node is an item in an xml tree that was compiled to be processed via xml paths.

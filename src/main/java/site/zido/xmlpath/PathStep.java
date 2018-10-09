@@ -1,10 +1,10 @@
-package site.zido.xsoup;
+package site.zido.xmlpath;
 
-import site.zido.xsoup.exception.LexException;
-import site.zido.xsoup.exception.NoLiteralException;
-import site.zido.xsoup.exception.UnreachableException;
-import site.zido.xsoup.pred.*;
-import site.zido.xsoup.utils.StringUtils;
+import site.zido.xmlpath.exception.LexException;
+import site.zido.xmlpath.exception.NoLiteralException;
+import site.zido.xmlpath.exception.UnreachableException;
+import site.zido.xmlpath.pred.*;
+import site.zido.xmlpath.utils.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;

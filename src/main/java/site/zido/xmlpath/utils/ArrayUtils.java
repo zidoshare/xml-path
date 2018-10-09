@@ -1,4 +1,4 @@
-package site.zido.xsoup.utils;
+package site.zido.xmlpath.utils;
 
 /**
  * array utils.
